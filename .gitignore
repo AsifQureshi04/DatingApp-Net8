@@ -11,6 +11,9 @@
 npm-debug.log
 yarn-error.log
 
+  git config --global user.email "asifqureshi4794@gmail.com"
+  git config --global user.name "Asif Qureshi"
+
 # IDEs and editors
 .idea/
 .project
