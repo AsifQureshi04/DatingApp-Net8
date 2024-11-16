@@ -18,23 +18,22 @@ export class NavbarComponent {
   private toastr = inject(ToastrService);
   model: any = {}
   username : any;
-
+  
   ngOnInit(){
-    this.username = localStorage.getItem('username');
+    this.username = JSON.parse(localStorage.getItem('user')!).userName;
   }
 
-    login() {
-      this.accountService.login(this.model).subscribe({
-        next : response =>{
-          localStorage.setItem('username',this.model.Username)
-          this.username = this.model.Username;
-          this.toastr.success(this.username);
-        },
-        error : error =>{
-          this.toastr.error(error.error);
-        }
-      })
-    }
+  login() {
+    console.log(this.model)
+    this.accountService.login(this.model).subscribe({
+      next: data => {
+        this.username = data.userName
+        console.log(data);
+        this.router.navigateByUrl('/members')
+      },
+      error: error => this.toastr.error(error.error)
+    })
+  }
 
     logout(){
       this.accountService.logout();
@@ -42,3 +41,7 @@ export class NavbarComponent {
       this.router.navigateByUrl('/');
     }
 }
+
+
+
+

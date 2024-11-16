@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RegisterComponent } from "../register/register.component";
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -10,13 +9,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  http = inject(HttpClient)
   registerMode = false;
-  users : any;
-
-  ngOnInit(){
-    this.getUsers();
-  }
 
   registerToggle(){
     this.registerMode = !this.registerMode;
@@ -26,12 +19,5 @@ export class HomeComponent {
     this.registerMode = event.value;
   }
 
-  getUsers(){
-    this.http.get('https://localhost:7228/api/Users/GetAllUsers').subscribe({
-      next : (response) => {this.users = response},
-      error : (error) => {console.log(error)},
-      complete :() => {console.log('Request has completed');     console.log(this.users);
-      }
-    })
-  }
+
 }

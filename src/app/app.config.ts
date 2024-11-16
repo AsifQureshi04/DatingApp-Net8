@@ -7,12 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { errorInterceptor } from './Interceptor/error.interceptor';
+import { jwtInterceptor } from './Interceptor/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes),
-    provideHttpClient(withInterceptors([errorInterceptor])),
+    provideHttpClient(withInterceptors([errorInterceptor,jwtInterceptor])),
     provideAnimations(),
     provideToastr({
       positionClass : 'toast-bottom-right',
