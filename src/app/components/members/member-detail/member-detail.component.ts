@@ -16,24 +16,25 @@ import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 export class MemberDetailComponent implements OnInit {
   private memberService = inject(MembersService)
   private route = inject(ActivatedRoute)
-  response!: any;
+  isApiCall : boolean = false;
   member?: Member;
+  response?: any;
   images: GalleryItem[] = [];
 
   ngOnInit() : void{
-    console.log('member details')
     this.loadMember();
   }
 
   loadMember(){
     const username = this.route.snapshot.paramMap.get('username');
-    if(!username) return;
+    if(!username){
+      return;
+    }
     this.memberService.getMember(username).subscribe({
-      next:member=>{this.response=member;
-            this.member = this.response.data[0];
-            console.log(this.member?.photos)
-            member.photos.map(p =>{
-              this.images.push(new ImageItem({src : p.url, thumb: p.url}))
+      next:member=>{
+            this.member =  member
+            this.member?.photos.map((p: { url: any; }) =>{
+            this.images.push(new ImageItem({src : p.url, thumb: p.url}))
             })
       }
     })

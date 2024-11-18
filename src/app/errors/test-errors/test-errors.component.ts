@@ -16,8 +16,8 @@ export class TestErrorsComponent {
 
   get400Error() {
     this.http.get(this.baseUrl + 'buggy/bad-request').subscribe({
-      next: response => console.log(response),
-      error: error => console.log(error)
+      next: response => {console.log(response)},
+      error: error => {console.log(error)}
     })
   }
 
@@ -46,7 +46,6 @@ export class TestErrorsComponent {
     this.http.post(this.baseUrl + 'account/register', {}).subscribe({
       next: response => console.log(response),
       error: error => {
-        console.log(error);
         this.validationErrors = error;
       }
     })

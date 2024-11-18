@@ -1,5 +1,5 @@
 export interface User{
-    userName? : string
+    userName? : string | undefined
     token :string
     securityToken:string
 }

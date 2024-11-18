@@ -24,11 +24,9 @@ export class NavbarComponent {
   }
 
   login() {
-    console.log(this.model)
     this.accountService.login(this.model).subscribe({
       next: data => {
         this.username = data.userName
-        console.log(data);
         this.router.navigateByUrl('/members')
       },
       error: error => this.toastr.error(error.error)

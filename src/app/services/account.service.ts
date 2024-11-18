@@ -14,7 +14,6 @@ export class AccountService {
 
 
   login(model : any){
-    console.log(this.baseUrl + 'account/login')
     return this.http.post<User>(this.baseUrl + 'account/login',model).pipe(
       map(user =>{
         if(user){

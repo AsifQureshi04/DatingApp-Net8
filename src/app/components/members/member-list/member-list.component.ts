@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MembersService } from '../../../services/members.service';
-import { Member } from '../../../Models/member';
-import { RouterLink } from '@angular/router';
 import { MemberCardComponent } from "../member-card/member-card.component";
+import { Member } from '../../../Models/member';
 
 @Component({
   selector: 'app-member-list',
@@ -12,18 +11,17 @@ import { MemberCardComponent } from "../member-card/member-card.component";
   styleUrl: './member-list.component.scss'
 })
 export class MemberListComponent {
-  private memberService = inject(MembersService);
-  members : Member[] = [];
-
+  memberService = inject(MembersService);
+  members : Member[] = [] 
+  
   ngOnInit(){
-    this.loadMembers();
+    if(this.memberService.members().length === 0){ 
+      this.loadMembers();
+    }
   }
 
   loadMembers(){
-    this.memberService.getMembers().subscribe({
-      next : members => {this.members = members.data;
-         console.log('members is ',this.members)}
-    })
+    this.memberService.getMembers()
   }
 
 }
