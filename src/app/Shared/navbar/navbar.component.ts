@@ -17,16 +17,14 @@ export class NavbarComponent {
   private router = inject(Router);
   private toastr = inject(ToastrService);
   model: any = {}
-  username : any;
   
   ngOnInit(){
-    this.username = JSON.parse(localStorage.getItem('user')!).userName;
+
   }
 
   login() {
     this.accountService.login(this.model).subscribe({
       next: data => {
-        this.username = data.userName
         this.router.navigateByUrl('/members')
       },
       error: error => this.toastr.error(error.error)

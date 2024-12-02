@@ -9,6 +9,8 @@ import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { errorInterceptor } from './Interceptor/error.interceptor';
 import { jwtInterceptor } from './Interceptor/jwt.interceptor';
 import { loadingInterceptor } from './Interceptor/loading.interceptor';
+import { TimeagoModule } from 'ngx-timeago';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +23,6 @@ export const appConfig: ApplicationConfig = {
       timeOut: 3000,
       preventDuplicates: true,
     }),
-    importProvidersFrom(NgxSpinnerModule)
+    importProvidersFrom(NgxSpinnerModule,TimeagoModule.forRoot())
   ],
 };

@@ -1,10 +1,13 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, OnInit, signal } from '@angular/core';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { inject, Injectable, model, OnInit, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../Models/member';
 import { of, tap } from 'rxjs';
 import { response } from '../Models/response';
 import { AccountService } from './account.service';
+import { DeletePhotoPayload } from '../Models/DeletePhotoPayload';
+import { PaginatedResult } from '../Models/pagination';
+import { UserParams } from '../Models/userParams';
 
 @Injectable({
   providedIn: 'root'
@@ -13,40 +16,88 @@ export class MembersService {
   private http = inject(HttpClient);
   private accountService = inject(AccountService)
   baseUrl = environment.apiUrl;
-  members = signal<Member[]>([]);
-  member = signal<Member[]>([]);
-  response = signal<response | null>(null);
+  paginatedResult = signal<PaginatedResult<Member[]> | null>(null);
+  memberCache = new Map();
+  user = this.accountService.currentUser();
+  userParams = signal<UserParams>(new UserParams(this.user))
 
-
-  getMembers(){
-    const payload = {
-      "userName": "",
-      "token": ""
-    }
-    return this.http.post<any>(this.baseUrl+'Users/GetAllUsers',payload).subscribe({
-      next : (response) => {
-        this.members.set(response.data)
-      }
-    })
+  resetUserParams(){
+    this.userParams.set(new UserParams(this.user))
   }
 
-  getMember(username : string){
-    const payload = {
-      "userName": username,
-      "token": ""
+  getMembers(){
+    const response = this.memberCache.get(Object.values(this.userParams()).join('-'));
+    if(response) return this.setPaginatedResponse(response);
+
+    let params = this.setPaginationHeaders(this.userParams().pageNumber, this.userParams().pageSize);
+    params = params.append('minAge',this.userParams().minAge)
+    params = params.append('maxAge',this.userParams().maxAge)
+    params = params.append('gender',this.userParams().gender)
+    params = params.append('orderBy',this.userParams().orderBy)
+    return this.http.get<any>(this.baseUrl+'Users/GetAllUsers',{observe:'response',params}).subscribe({
+      next : (response) => {
+          this.setPaginatedResponse(response)
+          this.memberCache.set(Object.values(this.userParams()).join('-'),response)
+      }
+    })
+    
+  }
+
+  private setPaginatedResponse(response : HttpResponse<any>){
+    this.paginatedResult.set({
+      items: response.body.data as Member[],
+      pagination: JSON.parse(response.headers.get('Pagination')!) 
+    })
+  }
+   
+  private setPaginationHeaders(pageNumber : number , pageSize : number){
+    let params = new HttpParams();
+    if(pageNumber && pageSize){
+      params = params.append('pageNumber',pageNumber.toString());
+      params = params.append('pageSize',pageSize.toString());
     }
-    const member = this.members().find(x => x.userName === username)
-    if(member != undefined) return of(member)
-    return this.http.post<any>(this.baseUrl+'Users/GetAllUsers' ,payload)
+    return params;
+  }
+
+  getMember(Username : string){
+    const member = [...this.memberCache.values()]
+        .reduce((arr,elem) => arr.concat(elem.body.data),[])
+        .find((m : Member) => m.userName === Username);
+
+    if(member) return of(member);
+
+    let params = new HttpParams();
+    if(Username){
+      params = params.append("Username",Username);
+    }
+    return this.http.get<any>(this.baseUrl+'Users/GetAllUsers',{observe:'response',params})
   }
 
   updateMember(member : Member){
-    member.userName = this.accountService.currentUser()?.userName as string
+    member.userName = this.accountService.currentUser()?.data.userName as string
    return this.http.put(this.baseUrl+'Users/UpdateUser',member).pipe(
-      tap(()=>{
-        this.members.update(members => members.map(m => m.userName === member.userName ? member : m));
-      })
+      // tap(()=>{
+      //   this.members.update(members => members.map(m => m.userName === member.userName ? member : m));
+      // })
     );
   }
 
+  setMainPhoto(photo:any, username:string){
+    const payload = {...photo }
+    payload.username = username
+    return this.http.post(this.baseUrl+'Users/SetMainPhoto',payload).pipe(
+      // tap(()=>{
+      //   this.members.update(members =>members.map(m=>{
+      //     if(members.includes(photo)){
+      //       m.photoUrl = photo.url    
+      //     }
+      //     return m;
+      //   }))
+      // })
+    );
+  }
+
+  deletePhoto(deletePhotoPayload : DeletePhotoPayload){
+    return this.http.post(this.baseUrl+'Users/DeletePhoto',deletePhotoPayload);
+  }
 }

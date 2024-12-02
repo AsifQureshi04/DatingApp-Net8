@@ -1,5 +1,15 @@
-export interface User{
-    userName? : string | undefined
-    token :string
-    securityToken:string
-}
+export interface User {
+    message: string
+    statusCode: string
+    token: number
+    securityToken: string
+    data: Data
+  }
+  
+  export interface Data {
+    message: string
+    userName: string
+    url: string
+    knowAs: string
+    gender: string
+  }

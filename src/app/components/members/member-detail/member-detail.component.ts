@@ -27,12 +27,11 @@ export class MemberDetailComponent implements OnInit {
 
   loadMember(){
     const username = this.route.snapshot.paramMap.get('username');
-    if(!username){
-      return;
-    }
+    if(!username) return;
     this.memberService.getMember(username).subscribe({
       next:member=>{
             this.member =  member
+            // if(member.body.data!)this.member = member.body.data
             this.member?.photos.map((p: { url: any; }) =>{
             this.images.push(new ImageItem({src : p.url, thumb: p.url}))
             })
