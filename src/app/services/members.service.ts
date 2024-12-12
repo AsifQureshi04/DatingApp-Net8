@@ -50,8 +50,8 @@ export class MembersService {
     const member = [...this.memberCache.values()]
         .reduce((arr,elem) => arr.concat(elem.body.data),[])
         .find((m : Member) => m.userName === Username);
-
-    if(member) return of(member);
+    
+    if(member) {console.log('member',member);return of(member);}
 
     let params = new HttpParams();
     if(Username){

@@ -1,1 +1,76 @@
-<p>messages works!</p>
+<div class="chat-container">
+    <!-- Sidebar for Chats -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <input
+          type="text"
+          placeholder="Search or start new chat"
+          class="search-input"
+          [(ngModel)]="searchText"
+        />
+      </div>
+      <div class="chat-list">
+        <div
+          class="chat-item"
+          *ngFor="let chat of messageService.AllUsersChats()! | filter: searchText"
+          [class.active]="chat.chatId === activeChatId"
+          (click)="selectChat(chat)"
+        >
+          <img [src]="chat.photoUrl || 'assets/default-avatar.png'" alt="Avatar" class="avatar" />
+          <div class="chat-info">
+            <h4>{{ chat.chatPartnerName }}</h4>
+            <p class="last-message">{{ chat.message }}</p>
+          </div>
+          <span class="timestamp">
+            <time [attr.datetime]="chat.createdOn">{{ chat.createdOn | dateTimeFormatter }}</time>
+          </span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Main Chat Section -->
+   @if(messages || chatPartnerName && lastActive){
+    <div class="chat-main">
+      <div class="chat-header">
+        <img *ngIf="url"
+          [src]="url || 'assets/default-avatar.png'"
+          alt="Avatar"
+          class="avatar"
+        />
+        <div class="chat-header-info">
+          <h4>{{ chatPartnerName }}</h4>
+          <p>Last seen {{  lastActive | timeago }}</p>
+        </div>
+      </div>
+  
+      <div class="chat-body">
+       @if(messages){
+        <div
+        class="message"
+        *ngFor="let message of messages"
+        [ngClass]="{
+            'sent':message.senderId === userid,
+            'received':message.senderId !== userid  
+        }"
+      >
+        <span class="message-text">{{ message.message }}</span>
+        <span class="message-time">{{ message.createdOn | date:'medium' }}</span>
+      </div>
+       }@else{
+        <h4>No Chats Available</h4>
+       }
+      </div>
+  
+      <div class="chat-footer">
+        <textarea
+          class="message-input"
+          placeholder="Type a message"
+          [(ngModel)]="newMessage"
+          (keyup.enter)="sendMessage()"
+        ></textarea>
+        <button class="send-button" (click)="sendMessage()">Send</button>
+      </div>
+    </div>
+   }
+  </div>
+  

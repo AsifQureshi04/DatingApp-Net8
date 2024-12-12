@@ -1,6 +1,6 @@
-import { Component, computed, inject, input, NgModule}from '@angular/core';
+import { Component, computed, inject, input, InputSignal, NgModule}from '@angular/core';
 import { Member } from '../../../Models/member';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LikesService } from '../../../services/likes.service';
 import { CommonModule } from '@angular/common';
 
@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class MemberCardComponent  {
   private likeService = inject(LikesService)
   member = input.required<Member>();
+  private router = inject(Router);
   hasLiked = computed(()=> this.likeService.likeIds().includes((this.member().id)))
 
   toggleLike(){
@@ -29,4 +30,8 @@ export class MemberCardComponent  {
     })
   }
 
+  sendMessage(member : any) {
+    console.log(member)
+    this.router.navigate(['/messages'], { state: { member: member } });
+  }
 }

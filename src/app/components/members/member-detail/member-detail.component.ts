@@ -32,10 +32,10 @@ export class MemberDetailComponent implements OnInit {
     this.memberService.getMember(username).subscribe({
       next:member=>{
             this.member =  member
-            if(member.body.data!){
+            if(member.body.data[0]){
               this.member = member.body.data[0]
             }
-            console.log(this.member?.photos)
+            console.log('member from details component',this.member)
             this.member?.photos.map((p: { url: any; }) =>{
             this.images.push(new ImageItem({src : p.url, thumb: p.url}))
             })
