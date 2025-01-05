@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 import { TimeagoModule } from 'ngx-timeago';
+import { PresenceService } from '../../../services/presence.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -16,6 +17,7 @@ import { TimeagoModule } from 'ngx-timeago';
 })
 export class MemberDetailComponent implements OnInit {
   private memberService = inject(MembersService)
+  presenceService = inject(PresenceService)
   private route = inject(ActivatedRoute)
   isApiCall : boolean = false;
   member?: Member;
@@ -23,7 +25,9 @@ export class MemberDetailComponent implements OnInit {
   images: GalleryItem[] = [];
 
   ngOnInit() : void{
+    console.log('online users',this.presenceService.onlineUsers())
     this.loadMember();
+    console.log(this.presenceService.onlineUsers()!)
   }
 
   loadMember(){

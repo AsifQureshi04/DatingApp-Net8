@@ -39,7 +39,12 @@
         />
         <div class="chat-header-info">
           <h4>{{ chatPartnerName }}</h4>
-          <p>Last seen {{  lastActive | timeago }}</p>
+          @if(presenceService.onlineUsers().includes(chatPartnerName)){
+            <p>Online Now</p>
+          }
+          @else {
+            <p>Last seen {{ lastActive ? (lastActive | timeago) : 'Unknown' }}</p>
+          }
         </div>
       </div>
   
@@ -53,8 +58,24 @@
             'received':message.senderId !== userid  
         }"
       >
+      <div class="message-container">
         <span class="message-text">{{ message.message }}</span>
+        <div *ngIf="message.senderId === userid" class="menu-container">
+          <button class="menu-trigger" (click)="toggleMenu(message.id!)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6L8 10L12 6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>            
+          </button>
+          <div class="custom-menu" *ngIf="activeMenuMessageId === message.id">
+            <button class="menu-item" (click)="editMessage(message)">Edit</button>
+            <button class="menu-item" (click)="deleteMessage(message)">Delete</button>
+          </div>
+        </div>
+      </div>
         <span class="message-time">{{ message.createdOn | date:'medium' }}</span>
+        <!-- HTML -->
+      
+
       </div>
        }@else{
         <h4>No Chats Available</h4>

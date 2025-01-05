@@ -1,22 +1,25 @@
 export interface UserChatHistoryDetail {
     knownAs: string
-    lastActive: string
+    lastActive: string  
   }
   
   export interface Messages {
+    id? : number;
     message: string
-    photoUrl: string
+    photoUrl?: string
     createdOn: string
     senderId? : number
     recipientId? : number
+    chatId : string
   }
 
   export interface AllUserChatHistory {
-    senderId: number;
-    recipientId: number
-    chatId: string
+    id?:number;
+    senderId?: number;
+    recipientId?: number
+    chatId?: string
     message: string
-    photoUrl: string
+    photoUrl?: string
     recipientName?: string
     createdOn: string
     chatPartnerName?:string
