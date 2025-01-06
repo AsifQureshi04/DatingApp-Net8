@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FilterPipe } from '../../CustomPipe/filter.pipe';
 import { CommonModule, NgFor } from '@angular/common';
@@ -19,11 +19,13 @@ import { HubConnection, HubConnectionState } from '@microsoft/signalr';
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.scss'
 })
-export class MessagesComponent {
+export class MessagesComponent implements AfterViewInit {
+
   private accountService = inject(AccountService);
   messageService = inject(MessageService);
   private toastr = inject(ToastrService)
   presenceService = inject(PresenceService)
+  @ViewChild('scrollMe') scrollContainer?: any;
   AllUsersChats: AllUserChatHistory[]=[];
   UserChatHistoryDetail!:UserChatHistoryDetail;
   AllUserChatHistory!:AllUserChatHistory;
@@ -106,6 +108,18 @@ export class MessagesComponent {
         console.error("Error:", err);
       },
     });
+    this.scrollToBottom();
+
+  }
+
+  ngAfterViewInit(): void {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(){
+    if(this.scrollContainer){
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+    }
   }
   
   sendMsgList(){
