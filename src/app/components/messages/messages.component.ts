@@ -108,7 +108,7 @@ export class MessagesComponent implements AfterViewInit {
         console.error("Error:", err);
       },
     });
-    this.scrollToBottom();
+    this.scrollToBottom(); 
 
   }
 
