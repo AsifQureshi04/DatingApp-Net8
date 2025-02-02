@@ -2,6 +2,10 @@
     <div class="container">
         <a class="navbar-brand" routerLink="/" routerLinkActvie="active">Dating App</a>
 
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
         @if(accountService.currentUser()){
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item"><a routerLink="/members"  routerLinkActvie="active" class="nav-link" href="#">Matches</a></li>
@@ -43,7 +47,6 @@
                 <button class="btn btn-success" type="submit">Login</button>
             </form>
         }
-      
-        
+              
     </div>
 </nav>
